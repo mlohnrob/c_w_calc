@@ -1,0 +1,25 @@
+import math
+
+def calc():
+    print("\n")
+    radius_original = float(input("Radius of original circle in cm: "))
+    degree = float(input("Cutout in degrees: "))
+    k = float(input("k value in kg/m: "))
+    
+    rho_air = 1.204
+
+    part = 1.0 - degree/360.0
+
+    radius_new = part * radius_original
+
+    area = (math.pi * radius_new**2.0) / 10000 # make it m² instead of cm²
+
+    theta_open = (2.0 * math.asin(radius_new / radius_original)) * (180.0 / math.pi)
+
+    c_w = (2.0 * k) / (rho_air * area)
+
+    return f"\nTheta Open:\n{theta_open} degrees\n\nc_w:\n{c_w}"
+
+
+if __name__ == "__main__":
+    print(calc())

@@ -1,0 +1,65 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+from lmfit import Model
+
+def calc(radius_original, degree, vel_list, airRes_list):
+    # print("\n")
+    # radius_original = float(input("Radius of original circle in cm: "))
+    # degree = float(input("Cutout in degrees: "))
+    # k = float(input("k value in kg/m: "))
+
+    vel_list = np.array(vel_list)
+    airRes_list = np.array(airRes_list)
+    
+    rho_air = 1.204
+
+    part = 1.0 - degree/360.0
+
+    radius_new = part * radius_original
+
+    area = (math.pi * radius_new**2.0) / 10000 # make it m² instead of cm²
+
+    theta_open = (2.0 * math.asin(radius_new / radius_original)) * (180.0 / math.pi)
+
+    # Calculate k:
+    k = calcK(vel_list, airRes_list)
+
+    c_w = (2.0 * k) / (rho_air * area)
+    return f"\nTheta Open:\n{theta_open} degrees\n\nc_w:\n{c_w}"
+    # return f"\nTheta Open:\n{theta_open} degrees"
+
+
+
+def template(x, a, b):
+    return a * x**2 + b
+
+def calcK(x, y):
+    pmodel = Model(template)
+    params = pmodel.make_params(a=1, b=0)
+
+    params["b"].vary = False
+
+    result = pmodel.fit(y, params, x=x)
+
+    xnew = np.linspace(-0.01, x[-1]+x[-1]/10, 100)
+    ynew = result.eval(x=xnew)
+
+    plt.plot(x, y, "bo")
+    # plt.plot(x, result.best_fit, "k-")
+    plt.plot(xnew, ynew, "r-")
+    # plt.grid(True)
+    plt.xlabel("Velocity (m/s)")
+    plt.ylabel("Air Resistance (N)")
+
+    return result.best_values["a"]
+
+
+
+if __name__ == "__main__":
+    vel_list = [1.578, 1.841, 1.868, 2.035, 2.165, 2.189]
+    airRes_list = [0.016, 0.0191, 0.022, 0.0252, 0.0285, 0.0315]
+
+    print(calc(9.7, 120, vel_list, airRes_list))
+    plt.show()
+

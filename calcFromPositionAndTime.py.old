@@ -1,0 +1,56 @@
+import math
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+
+# Args are later going to be paths to .csv files
+def calcFromPositionAndTime():
+    raw_data = pd.read_csv("csv_files/30gr6.csv", sep=";")
+
+    # Convert danish numbers to english numbers
+    for col in raw_data.columns:
+        raw_data[col] = raw_data[col].str.replace(",", ".")
+        # raw_data[col] = raw_data[col].str.replace("-", "")
+
+
+    raw_data = raw_data.astype(float)
+    raw_data.columns = ["time", "position", "velocity", "acceleration"]
+
+    time_list = raw_data["time"].to_list()
+    position_list = raw_data["position"].to_list()
+
+    for j in range(4):
+        for i, pos in enumerate(position_list):
+            diff = math.fabs(pos - position_list[i-1])
+            if i == 0:
+                continue
+            elif diff > 0.15 or diff < 0.05:
+                del position_list[i]
+                del time_list[i]
+                continue
+
+    for i, pos in enumerate(position_list):
+        if i == 0:
+            continue
+        elif math.fabs(pos - position_list[i-1]) > 0.15:
+            position_list = position_list[:i-1]
+            time_list = time_list[:i-1]
+            break
+
+    del time_list[0]
+    del position_list[0]
+
+    polyline = np.poly1d(np.polyfit(time_list, position_list, 1))
+
+    velocity = polyline.c[0]
+
+    plt.plot(time_list, polyline(time_list))
+
+    plt.plot(time_list, position_list, "bo")
+
+    plt.show()
+
+
+if __name__ == "__main__":
+    calcFromPositionAndTime()
