@@ -7,7 +7,6 @@ import sys
 import os
 
 
-# Args are later going to be paths to .csv files
 def calcFromPositionAndTime(path):
     raw_data = pd.read_csv(path, sep=";")
     raw_data = raw_data.dropna()
@@ -24,26 +23,33 @@ def calcFromPositionAndTime(path):
     time_list = raw_data["time"].to_list()
     position_list = raw_data["position"].to_list()
 
-    for j in range(5):
-        for i, pos in enumerate(position_list):
-            diff = math.fabs(pos - position_list[i-1])
-            if i == 0:
-                continue
-            elif diff > 0.15 or diff < 0.05:
-                del position_list[i]
-                del time_list[i]
-                continue
+    for i, pos in enumerate(position_list):
+        if i == 0:
+            continue
+        elif math.fabs(pos - position_list[i-1]) > 0.001:
+            position_list = position_list[i+1:]
+            time_list = time_list[i+1:]
+            break
+
+
+    # for j in range(2):
+    #     for i, pos in enumerate(position_list):
+    #         diff = math.fabs(pos - position_list[i-1])
+    #         if i == 0:
+    #             continue
+    #         elif diff > 0.15 or diff < 0.05:
+    #             del position_list[i]
+    #             del time_list[i]
+    #             continue
 
     for i, pos in enumerate(position_list):
         if i == 0:
             continue
-        elif math.fabs(pos - position_list[i-1]) > 0.15:
+        elif math.fabs(pos - position_list[i-1]) > 0.30:
             position_list = position_list[:i-1]
             time_list = time_list[:i-1]
             break
-
-    del time_list[0]
-    del position_list[0]
+    print(time_list, position_list)
 
     polyline = np.poly1d(np.polyfit(time_list, position_list, 1))
 
@@ -89,8 +95,8 @@ def calcK(x, y):
     ynew = result.eval(x=xnew)
 
     plt.plot(x, y, "bo")
-    # plt.plot(x, result.best_fit, "k-")
-    plt.plot(xnew, ynew, "r-")
+    plt.plot(x, result.best_fit, "k-")
+    # plt.plot(xnew, ynew, "r-")
     # plt.grid(True)
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Air Resistance (N)")
@@ -124,7 +130,7 @@ def calculator():
     airRes_list = []
 
     for fw in data_sets_and_weight:
-        velocity_list.append(calcFromPositionAndTime(f"{path}{fw[0]}"))
+        velocity_list.append(math.fabs(calcFromPositionAndTime(f"{path}{fw[0]}")))
         
         weight = fw[1] / 1000 # Convert grams to kg
         airRes = weight * 9.82
@@ -135,6 +141,7 @@ def calculator():
 
     open_angle, c_w = calcAngleAndCw(radius, cutout_angle, k)
     print(open_angle, c_w)
+    plt.show()
 
 if __name__ == "__main__":
     calculator()
