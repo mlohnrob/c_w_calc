@@ -2,6 +2,20 @@
 Dette program læser datasæt, der er eksporteret fra LoggerPro som .csv filer, **sorterer** dem, **fitter** dem og **plotter** dem.
 Derudover udregnes åbningsvinkel, luftmodstand og c_w faktor af keglen. Luftmodstande og c_w faktorer plottes, og der fittes en andengradsregression.
 
+## Download
+### Som .zip fil
+På denne side, tryk på den grønne knap "Code" og vælg `Download ZIP`
+
+### Med git
+```
+$ git clone https://github.com/mlohnrob/c_w_calc.git
+```
+
+### Med gh
+```
+$ gh repo clone mlohnrob/c_w_calc
+```
+
 ## Kør programmet
 Programmet kan både køres af **windows** som en .exe fil og af **python** som en .py fil.
 Dog kører det meget **langsomt** som .exe fil, da det er kompileret fra python.
