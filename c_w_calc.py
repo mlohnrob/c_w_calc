@@ -6,15 +6,16 @@ from lmfit import Model
 import sys
 import os
 
+fig, axis = plt.subplots(2, 3, sharex=True, sharey=True)
+plots = []
 
-def calcFromPositionAndTime(path):
+def calcFromPositionAndTime(path, i):
     raw_data = pd.read_csv(path, sep=";")
     raw_data = raw_data.dropna()
 
     # Convert danish numbers to english numbers
     for col in raw_data.columns:
         raw_data[col] = raw_data[col].str.replace(",", ".")
-        # raw_data[col] = raw_data[col].str.replace("-", "")
 
 
     raw_data = raw_data.astype(float)
@@ -23,43 +24,42 @@ def calcFromPositionAndTime(path):
     time_list = raw_data["time"].to_list()
     position_list = raw_data["position"].to_list()
 
+    for j in range(3):
+        for i, pos in enumerate(position_list):
+            diff = pos - position_list[i-1]
+            if i == 0:
+                continue
+            elif diff > 0.09:
+                del position_list[i]
+                del time_list[i]
+                continue
+
+    
+
     for i, pos in enumerate(position_list):
+        diff = pos - position_list[i-1]
+        diff = math.fabs(diff)
         if i == 0:
             continue
-        elif math.fabs(pos - position_list[i-1]) > 0.001:
+        elif diff > 0.06:
             position_list = position_list[i+1:]
             time_list = time_list[i+1:]
             break
 
-
-    # for j in range(2):
-    #     for i, pos in enumerate(position_list):
-    #         diff = math.fabs(pos - position_list[i-1])
-    #         if i == 0:
-    #             continue
-    #         elif diff > 0.15 or diff < 0.05:
-    #             del position_list[i]
-    #             del time_list[i]
-    #             continue
-
     for i, pos in enumerate(position_list):
+        diff = pos - position_list[i-1]
         if i == 0:
             continue
-        elif math.fabs(pos - position_list[i-1]) > 0.30:
+        elif diff > 0.30 or math.fabs(diff) < 0.002:
             position_list = position_list[:i-1]
             time_list = time_list[:i-1]
             break
-    print(time_list, position_list)
 
     polyline = np.poly1d(np.polyfit(time_list, position_list, 1))
 
     velocity = polyline.c[0]
 
-    # plt.plot(time_list, polyline(time_list))
-
-    # plt.plot(time_list, position_list, "bo")
-
-    # plt.show()
+    plots.append(((time_list, polyline(time_list)), (time_list, position_list)))
 
     return velocity
 
@@ -91,23 +91,32 @@ def calcK(x, y):
 
     result = pmodel.fit(y, params, x=x)
 
+    k = result.best_values["a"]
+
     xnew = np.linspace(-0.01, x[-1]+x[-1]/10, 100)
     ynew = result.eval(x=xnew)
 
+    plt.figure()
     plt.plot(x, y, "bo")
-    plt.plot(x, result.best_fit, "k-")
-    # plt.plot(xnew, ynew, "r-")
-    # plt.grid(True)
+    plt.plot(xnew, ynew, "r-")
+    plt.suptitle(f"F_air = {k} * v²")
     plt.xlabel("Velocity (m/s)")
     plt.ylabel("Air Resistance (N)")
+    plt.grid(True)
 
-    return result.best_values["a"]
+    return k
 
 def calculator():
-    if len(sys.argv) == 2:
+    doPlot = False
+    if len(sys.argv) == 3:
+        path = sys.argv[1]
+        if sys.argv[2] == "plot":
+            doPlot = True
+    elif len(sys.argv) == 2:
         path = sys.argv[1]
     else:
-        path = "./"
+        print("Please provide path for data sets")
+        sys.exit()
     files_in_path = sorted(os.listdir(path))
 
     data_sets_and_weight = []
@@ -115,33 +124,67 @@ def calculator():
     radius = float(input("\nRadius of original circle in cm: "))
     cutout_angle = float(input("\nAngle of cutout: "))
     
-    print("\n'y' for yes and 'n' for no\n")
-    for f in files_in_path:
+    for i, f in enumerate(files_in_path):
         if ".csv" in f:
-            answer = input(f"Use {f} ?: ")
-            if answer == "y":
-                weight = float(input("Weight in grams: "))
-                print("\n")
-                data_sets_and_weight.append((f, weight))
-            elif answer != "n":
-                sys.exit()
+            print(f"\n{f}")
+            weight = float(input("Weight in grams: "))
+            data_sets_and_weight.append((f, weight))
+
 
     velocity_list = []
     airRes_list = []
 
-    for fw in data_sets_and_weight:
-        velocity_list.append(math.fabs(calcFromPositionAndTime(f"{path}{fw[0]}")))
+    for i, fw in enumerate(data_sets_and_weight):
+        velocity_list.append(math.fabs(calcFromPositionAndTime(f"{path}{fw[0]}", i)))
         
         weight = fw[1] / 1000 # Convert grams to kg
         airRes = weight * 9.82
 
         airRes_list.append(airRes)
 
+    plt.suptitle("Data sets")
+
+
+    for i, plot in enumerate(plots):
+        if i == 0:
+            axis[0, 0].plot(plot[0][0], plot[0][1])
+            axis[0, 0].plot(plot[1][0], plot[1][1], "bo")
+            axis[0, 0].set_ylabel("Position (m)")
+        elif i == 1:
+            axis[0, 1].plot(plot[0][0], plot[0][1])
+            axis[0, 1].plot(plot[1][0], plot[1][1], "bo")
+        elif i == 2:
+            axis[0, 2].plot(plot[0][0], plot[0][1])
+            axis[0, 2].plot(plot[1][0], plot[1][1], "bo")
+        elif i == 3:
+            axis[1, 0].plot(plot[0][0], plot[0][1])
+            axis[1, 0].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 0].set_xlabel("Time (s)")
+            axis[1, 0].set_ylabel("Position (m)")
+        elif i == 4:
+            axis[1, 1].plot(plot[0][0], plot[0][1])
+            axis[1, 1].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 1].set_xlabel("Time (s)")
+        elif i == 5:
+            axis[1, 2].plot(plot[0][0], plot[0][1])
+            axis[1, 2].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 2].set_xlabel("Time (s)")
+
+    plt.tight_layout()
+
+
+
+
+
+
     k = calcK(velocity_list, airRes_list)
 
     open_angle, c_w = calcAngleAndCw(radius, cutout_angle, k)
-    print(open_angle, c_w)
-    plt.show()
+    print("\n")
+    print(100 * "=")
+    print(f"\nangle = {open_angle}\nc_w = {c_w}")
+    if doPlot:
+        plt.show()
 
 if __name__ == "__main__":
     calculator()
