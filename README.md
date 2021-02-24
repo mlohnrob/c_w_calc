@@ -6,7 +6,7 @@ Derudover udregnes åbningsvinkel, luftmodstand og c_w faktor af keglen. Luftmod
 Programmet kan både køres af **windows** som en .exe fil og af **python** som en .py fil.
 Dog kører det meget **langsomt** som .exe fil, da det er kompileret fra python.
 
-### Windows .exe
+### Med Windows .exe
 #### Uden plot
 `
 .\c_w_calc.exe stig\til\csv-fil-mappe
@@ -16,7 +16,7 @@ Dog kører det meget **langsomt** som .exe fil, da det er kompileret fra python.
 .\c_w_calc.exe stig\til\csv-fil-mappe plot
 `
 
-### Python .py
+### Med Python .py
 #### Uden plot
 `
 python c_w_calc.py stig/til/csv-fil-mappe
@@ -37,6 +37,7 @@ python c_w_calc.py csv_files_30/ plot
 `
 
 **Dette er et eksempel på både input og output af programmet:**
+
 `
 python c_w_calc.py csv_files_120/ plot
 
