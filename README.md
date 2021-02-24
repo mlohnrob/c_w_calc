@@ -38,7 +38,7 @@ python c_w_calc.py csv_files_30/ plot
 
 **Dette er et eksempel på både input og output af programmet:**
 
-`
+```
 python c_w_calc.py csv_files_120/ plot
 
 Radius of original circle in cm: 9.7
@@ -68,4 +68,4 @@ Weight in grams: 3.21
 
 angle = 83.6206297915572
 c_w = 0.8040755171612669
-`
+```
