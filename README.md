@@ -39,7 +39,7 @@ python c_w_calc.py csv_files_30/ plot
 **Dette er et eksempel på både input og output af programmet:**
 
 ```
-python c_w_calc.py csv_files_120/ plot
+$ python c_w_calc.py csv_files_120/ plot
 
 Radius of original circle in cm: 9.7
 
