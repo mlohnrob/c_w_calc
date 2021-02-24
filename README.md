@@ -7,22 +7,22 @@ Programmet kan både køres af **windows** som en .exe fil og af **python** som 
 Dog kører det meget **langsomt** som .exe fil, da det er kompileret fra python.
 
 ### Med Windows .exe
-#### Uden plot
+#### Uden plot:
 `
 .\c_w_calc.exe stig\til\csv-fil-mappe
 `
-#### Med plot
+#### Med plot:
 `
 .\c_w_calc.exe stig\til\csv-fil-mappe plot
 `
 
 ### Med Python .py
-#### Uden plot
+#### Uden plot:
 `
 python c_w_calc.py stig/til/csv-fil-mappe
 `
 
-#### Med plot
+#### Med plot:
 `
 python c_w_calc.py stig/til/csv-fil-mappe plot
 `
