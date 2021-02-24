@@ -9,6 +9,7 @@ import os
 fig, axis = plt.subplots(2, 3, sharex=True, sharey=True)
 plots = []
 
+
 def calcFromPositionAndTime(path, i):
     raw_data = pd.read_csv(path, sep=";")
     raw_data = raw_data.dropna()
@@ -29,12 +30,10 @@ def calcFromPositionAndTime(path, i):
             diff = pos - position_list[i-1]
             if i == 0:
                 continue
-            elif diff > 0.09:
+            elif diff > 0.05:
                 del position_list[i]
                 del time_list[i]
                 continue
-
-    
 
     for i, pos in enumerate(position_list):
         diff = pos - position_list[i-1]
@@ -50,10 +49,20 @@ def calcFromPositionAndTime(path, i):
         diff = pos - position_list[i-1]
         if i == 0:
             continue
-        elif diff > 0.30 or math.fabs(diff) < 0.002:
+        elif diff > 0.1 or math.fabs(diff) < 0.005:
             position_list = position_list[:i-1]
             time_list = time_list[:i-1]
             break
+
+    for j in range(2):
+        for i, pos in enumerate(position_list):
+            diff = pos - position_list[i-1]
+            if i == 0:
+                continue
+            elif diff > -0.02:
+                del position_list[i]
+                del time_list[i]
+                continue
 
     polyline = np.poly1d(np.polyfit(time_list, position_list, 1))
 
@@ -62,6 +71,7 @@ def calcFromPositionAndTime(path, i):
     plots.append(((time_list, polyline(time_list)), (time_list, position_list)))
 
     return velocity
+
 
 def calcAngleAndCw(radius_original, cutout_angle, k):
     rho_air = 1.204
@@ -79,9 +89,9 @@ def calcAngleAndCw(radius_original, cutout_angle, k):
     return open_angle, c_w
 
 
-
 def template(x, a, b):
     return a * x**2 + b
+
 
 def calcK(x, y):
     pmodel = Model(template)
@@ -105,6 +115,7 @@ def calcK(x, y):
     plt.grid(True)
 
     return k
+
 
 def calculator():
     doPlot = False
@@ -130,7 +141,6 @@ def calculator():
             weight = float(input("Weight in grams: "))
             data_sets_and_weight.append((f, weight))
 
-
     velocity_list = []
     airRes_list = []
 
@@ -143,7 +153,6 @@ def calculator():
         airRes_list.append(airRes)
 
     plt.suptitle("Data sets")
-
 
     for i, plot in enumerate(plots):
         if i == 0:
@@ -171,11 +180,6 @@ def calculator():
             axis[1, 2].set_xlabel("Time (s)")
 
     plt.tight_layout()
-
-
-
-
-
 
     k = calcK(velocity_list, airRes_list)
 
