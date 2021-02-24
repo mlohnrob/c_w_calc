@@ -50,7 +50,7 @@ def calcFromPositionAndTime(path, i):
         diff = pos - position_list[i-1]
         if i == 0:
             continue
-        elif diff > 0.30 or math.fabs(diff) < 0.002:
+        elif pos > position_list[i-1] * 1.5 or math.fabs(diff) < 0.05:
             position_list = position_list[:i-1]
             time_list = time_list[:i-1]
             break
