@@ -36,7 +36,7 @@ python c_w_calc.py stig/til/csv-fil-mappe plot
 python c_w_calc.py csv_files_30/ plot
 `
 
-**Dette er et eksempel på både input og output af programmet:**
+### Eksempel på både input og output af programmet
 
 ```
 $ python c_w_calc.py csv_files_120/ plot
