@@ -1,0 +1,10 @@
+import matplotlib.pyplot as plt
+
+angles = [132.8870713817975, 112.8853804761586, 97.18075578145829, 83.6206297915572, 71.3706694253041]
+cws = [1.0673136056973334, 1.0401829932285407, 0.9098869484845737, 0.8040755171612669, 0.7683783793025706]
+
+plt.scatter(angles, cws)
+plt.xlabel("Cone Angles (degrees)")
+plt.ylabel("c_w factors")
+plt.grid()
+plt.show()
