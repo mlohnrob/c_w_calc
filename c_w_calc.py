@@ -147,27 +147,27 @@ def calculator():
 
     for i, plot in enumerate(plots):
         if i == 0:
-            axis[0, 0].plot(plot[0][0], plot[0][1])
             axis[0, 0].plot(plot[1][0], plot[1][1], "bo")
+            axis[0, 0].plot(plot[0][0], plot[0][1], "r-")
             axis[0, 0].set_ylabel("Position (m)")
         elif i == 1:
-            axis[0, 1].plot(plot[0][0], plot[0][1])
             axis[0, 1].plot(plot[1][0], plot[1][1], "bo")
+            axis[0, 1].plot(plot[0][0], plot[0][1], "r-")
         elif i == 2:
-            axis[0, 2].plot(plot[0][0], plot[0][1])
             axis[0, 2].plot(plot[1][0], plot[1][1], "bo")
+            axis[0, 2].plot(plot[0][0], plot[0][1], "r-")
         elif i == 3:
-            axis[1, 0].plot(plot[0][0], plot[0][1])
             axis[1, 0].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 0].plot(plot[0][0], plot[0][1], "r-")
             axis[1, 0].set_xlabel("Time (s)")
             axis[1, 0].set_ylabel("Position (m)")
         elif i == 4:
-            axis[1, 1].plot(plot[0][0], plot[0][1])
             axis[1, 1].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 1].plot(plot[0][0], plot[0][1], "r-")
             axis[1, 1].set_xlabel("Time (s)")
         elif i == 5:
-            axis[1, 2].plot(plot[0][0], plot[0][1])
             axis[1, 2].plot(plot[1][0], plot[1][1], "bo")
+            axis[1, 2].plot(plot[0][0], plot[0][1], "r-")
             axis[1, 2].set_xlabel("Time (s)")
 
     plt.tight_layout()
