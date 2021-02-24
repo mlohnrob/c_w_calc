@@ -4,7 +4,7 @@ Derudover udregnes åbningsvinkel, luftmodstand og c_w faktor af keglen. Luftmod
 
 ## Download
 ### Som .zip fil
-På denne side, tryk på den grønne knap "Code" og vælg `Download ZIP`
+[Download her](https://github.com/mlohnrob/c_w_calc/archive/master.zip)
 
 ### Med git
 ```
