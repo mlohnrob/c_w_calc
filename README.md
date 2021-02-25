@@ -23,11 +23,11 @@ Dog kører det meget **langsomt** som .exe fil, da det er kompileret fra python.
 ### Med Windows .exe
 #### Uden plot:
 `
-.\c_w_calc.exe stig\til\csv-fil-mappe
+$ .\c_w_calc.exe stig\til\csv-fil-mappe
 `
 #### Med plot:
 `
-.\c_w_calc.exe stig\til\csv-fil-mappe plot
+$ .\c_w_calc.exe stig\til\csv-fil-mappe plot
 `
 
 ### Med Python .py
@@ -37,21 +37,21 @@ $ pip install -r requirements.txt
 ```
 #### Uden plot:
 `
-python c_w_calc.py stig/til/csv-fil-mappe
+$ python c_w_calc.py stig/til/csv-fil-mappe
 `
 
 #### Med plot:
 `
-python c_w_calc.py stig/til/csv-fil-mappe plot
+$ python c_w_calc.py stig/til/csv-fil-mappe plot
 `
 
 **Hvis du har klonet dette repo, ville kommandoen f.eks. være:**
 ```
-.\c_w_calc.exe csv_files_30\ plot
+$ .\c_w_calc.exe csv_files_30\ plot
 ```
 **eller**
 ```
-python c_w_calc.py csv_files_30/ plot
+$ python c_w_calc.py csv_files_30/ plot
 ```
 
 ### Eksempel på både input og output af programmet
